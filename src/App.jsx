@@ -160,9 +160,9 @@ export default function App() {
 3. 突破口：今すぐできる具体的な一手を1つだけ提示する
 4. 結び：「なぜ今、鑑定が必要か」を自然な流れで示す（押し売りにならず、必然性として）`;
     try {
-      const res = await fetch("/api/messages", {
+      const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "x-api-key": import.meta.env.VITE_ANTHROPIC_API_KEY, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, messages: [{ role: "user", content: prompt }] })
       });
       const data = await res.json();
