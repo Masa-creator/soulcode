@@ -169,7 +169,9 @@ export default function App() {
       console.log("API response:", JSON.stringify(data, null, 2));
       const text = data.content?.find(b => b.type === "text")?.text || "";
       console.log("Extracted text:", text);
-      setResult({ lifePath: lp, soulUrge: su, expression: ex, report: text, recommended: recommendCourses(theme, lp) });
+      const recommended = recommendCourses(theme, lp);
+      setResult({ lifePath: lp, soulUrge: su, expression: ex, report: text, recommended });
+      window.gtag?.("event", "diagnosis_complete", { life_path: lp, soul_urge: su, expression: ex, theme });
       setStep(3);
     } catch (e) {
       setError("診断中に問題が生じました。もう一度お試しください。");
@@ -201,7 +203,7 @@ export default function App() {
               <div className="field"><label>お名前（漢字）</label><input value={kanjiName} onChange={e => setKanjiName(e.target.value)} placeholder="例：山田 太郎" /></div>
               <div className="field"><label>お名前（ローマ字）</label><input value={romaName} onChange={e => setRomaName(e.target.value)} placeholder="例：YAMADATARO" /></div>
               <div className="field"><label>生年月日</label><input type="date" value={dob} onChange={e => setDob(e.target.value)} min="1900-01-01" max="2099-12-31" /></div>
-              <button className="btn" onClick={() => setStep(2)} disabled={!canStep1}>次へ進む</button>
+                      <button className="btn" onClick={() => { window.gtag?.("event", "step_next", { step_from: 1, step_to: 2 }); setStep(2); }} disabled={!canStep1}>次へ進む</button>
             </>
           )}
           {step === 2 && !loading && (
@@ -210,7 +212,7 @@ export default function App() {
               <div className="field"><label>今、最も向き合いたいテーマ</label><div className="theme-grid">{THEMES.map(t => <button key={t} className={`theme-btn ${theme === t ? "selected" : ""}`} onClick={() => setTheme(t)}>{t}</button>)}</div></div>
               <div className="field"><label>現状（1〜3行でOK）</label><textarea value={situation} onChange={e => setSituation(e.target.value)} placeholder="今、何が詰まっていますか？" /></div>
               <button className="btn" onClick={handleDiagnose} disabled={!canStep2}>設計図を診断する</button>
-              <button className="reset-btn" onClick={() => setStep(1)}>← 基本情報に戻る</button>
+              <button className="reset-btn" onClick={() => { window.gtag?.("event", "step_back", { step_from: 2, step_to: 1 }); setStep(1); }}>← 基本情報に戻る</button>
               {error && <p className="error">{error}</p>}
             </>
           )}
@@ -235,7 +237,7 @@ export default function App() {
               <p className="course-section-label">あなたに最適な鑑定プラン</p>
               {result.recommended.map((n, i) => {
                 const c = COURSES[n];
-                return <a key={n} href={MOSH_URLS[n]} target="_blank" rel="noopener noreferrer" className={`course-card ${i === 0 ? "primary" : ""}`}><div className="card-top"><div className="card-title">{c.title}</div><div className="card-price">{c.price}</div></div><div className="card-tag">{c.tag}</div><div className="card-arrow">→ 詳細・お申し込み</div></a>;
+                return <a key={n} href={MOSH_URLS[n]} target="_blank" rel="noopener noreferrer" className={`course-card ${i === 0 ? "primary" : ""}`} onClick={() => window.gtag?.("event", "mosh_link_click", { course_id: n, course_title: c.title, course_price: c.price, is_primary: i === 0 })}><div className="card-top"><div className="card-title">{c.title}</div><div className="card-price">{c.price}</div></div><div className="card-tag">{c.tag}</div><div className="card-arrow">→ 詳細・お申し込み</div></a>;
               })}
               <button className="reset-btn" onClick={reset}>← 別の診断をする</button>
             </div>
