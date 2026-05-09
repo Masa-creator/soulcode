@@ -435,7 +435,7 @@ export default function BadmintonScoresheet() {
   }, [state.phase, state.timerSecs]);
 
   return (
-    <div style={{ minHeight: '100vh', background: C.bg, color: C.text, fontFamily: "'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', sans-serif", WebkitTapHighlightColor: 'transparent' }}>
+    <div style={{ minHeight: '100vh', minHeight: '100dvh', background: C.bg, color: C.text, fontFamily: "'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', sans-serif", WebkitTapHighlightColor: 'transparent', paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)', paddingLeft: 'env(safe-area-inset-left)', paddingRight: 'env(safe-area-inset-right)' }}>
       {state.phase === 'setup' && <SetupScreen state={state} dispatch={dispatch} />}
       {state.phase === 'playing' && <PlayingScreen state={state} dispatch={dispatch} />}
       {state.phase === 'interval' && <IntervalScreen state={state} dispatch={dispatch} />}
