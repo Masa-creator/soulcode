@@ -14,8 +14,11 @@ function checkGameWin(a, b, pts) {
 
 const INITIAL = {
   phase: 'setup',
+  mode: 'singles',
   playerA: '',
+  playerA2: '',
   playerB: '',
+  playerB2: '',
   gamePoints: 21,
   intervalMins: 1,
   currentGame: 1,
@@ -37,8 +40,11 @@ function reducer(state, action) {
     case 'START':
       return {
         ...INITIAL,
+        mode: state.mode,
         playerA: state.playerA,
+        playerA2: state.playerA2,
         playerB: state.playerB,
+        playerB2: state.playerB2,
         gamePoints: state.gamePoints,
         intervalMins: state.intervalMins,
         phase: 'playing',
@@ -122,36 +128,59 @@ const C = {
 
 const fmt = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 
-function SetupScreen({ state, dispatch }) {
-  const canStart = state.playerA.trim() && state.playerB.trim();
-  const inp = (key, placeholder) => (
-    <input
-      value={state[key]}
-      onChange={e => dispatch({ type: 'SET', key, value: e.target.value })}
-      placeholder={placeholder}
-      style={{ width: '100%', padding: '14px 16px', background: C.surfaceAlt, border: `2px solid ${C.surface}`, borderRadius: 12, color: C.text, fontSize: 18, outline: 'none', boxSizing: 'border-box' }}
-    />
+const nameInpStyle = { width: '100%', padding: '13px 16px 13px 34px', background: C.surfaceAlt, border: `2px solid ${C.surface}`, borderRadius: 12, color: C.text, fontSize: 17, outline: 'none', boxSizing: 'border-box' };
+
+function NameInput({ color, value, onChange, placeholder }) {
+  return (
+    <div style={{ position: 'relative' }}>
+      <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', width: 10, height: 10, borderRadius: '50%', background: color }} />
+      <input value={value} onChange={onChange} placeholder={placeholder} style={nameInpStyle} />
+    </div>
   );
+}
+
+function SetupScreen({ state, dispatch }) {
+  const isDoubles = state.mode === 'doubles';
+  const canStart = isDoubles
+    ? state.playerA.trim() && state.playerA2.trim() && state.playerB.trim() && state.playerB2.trim()
+    : state.playerA.trim() && state.playerB.trim();
+
+  const set = (key) => (e) => dispatch({ type: 'SET', key, value: e.target.value });
 
   return (
     <div style={{ padding: '32px 20px', maxWidth: 420, margin: '0 auto', width: '100%' }}>
-      <div style={{ textAlign: 'center', marginBottom: 40 }}>
+      <div style={{ textAlign: 'center', marginBottom: 36 }}>
         <div style={{ fontSize: 48 }}>🏸</div>
         <h1 style={{ fontSize: 26, fontWeight: 700, margin: '8px 0 4px', letterSpacing: 1 }}>バドミントン</h1>
         <p style={{ color: C.muted, fontSize: 14, letterSpacing: 2 }}>SCORE SHEET</p>
+
       </div>
 
       <section style={{ marginBottom: 28 }}>
-        <label style={labelStyle}>選手名</label>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', width: 10, height: 10, borderRadius: '50%', background: C.blue }} />
-            <input value={state.playerA} onChange={e => dispatch({ type: 'SET', key: 'playerA', value: e.target.value })} placeholder="選手 A の名前" style={{ width: '100%', padding: '14px 16px 14px 34px', background: C.surfaceAlt, border: `2px solid ${C.surface}`, borderRadius: 12, color: C.text, fontSize: 18, outline: 'none', boxSizing: 'border-box' }} />
-          </div>
-          <div style={{ position: 'relative' }}>
-            <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', width: 10, height: 10, borderRadius: '50%', background: C.red }} />
-            <input value={state.playerB} onChange={e => dispatch({ type: 'SET', key: 'playerB', value: e.target.value })} placeholder="選手 B の名前" style={{ width: '100%', padding: '14px 16px 14px 34px', background: C.surfaceAlt, border: `2px solid ${C.surface}`, borderRadius: 12, color: C.text, fontSize: 18, outline: 'none', boxSizing: 'border-box' }} />
-          </div>
+        <label style={labelStyle}>種目</label>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          {[['singles', 'シングルス'], ['doubles', 'ダブルス']].map(([val, label]) => (
+            <button key={val} onClick={() => dispatch({ type: 'SET', key: 'mode', value: val })}
+              style={{ padding: '15px 0', borderRadius: 12, border: `2px solid ${state.mode === val ? C.gold : C.surface}`, background: state.mode === val ? 'rgba(245,158,11,0.12)' : C.surfaceAlt, color: state.mode === val ? C.gold : C.muted, fontSize: 16, fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section style={{ marginBottom: 28 }}>
+        <label style={labelStyle}>{isDoubles ? 'チーム A（青）' : '選手名'}</label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <NameInput color={C.blue} value={state.playerA} onChange={set('playerA')} placeholder={isDoubles ? 'チーム A — 選手 1' : '選手 A の名前'} />
+          {isDoubles && <NameInput color={C.blue} value={state.playerA2} onChange={set('playerA2')} placeholder="チーム A — 選手 2" />}
+        </div>
+        {isDoubles && <div style={{ height: 16 }} />}
+        {isDoubles && <label style={{ ...labelStyle, marginTop: 4 }}>チーム B（赤）</label>}
+        {!isDoubles && <div style={{ height: 10 }} />}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: isDoubles ? 0 : 0 }}>
+          {!isDoubles && <NameInput color={C.red} value={state.playerB} onChange={set('playerB')} placeholder="選手 B の名前" />}
+          {isDoubles && <NameInput color={C.red} value={state.playerB} onChange={set('playerB')} placeholder="チーム B — 選手 1" />}
+          {isDoubles && <NameInput color={C.red} value={state.playerB2} onChange={set('playerB2')} placeholder="チーム B — 選手 2" />}
         </div>
       </section>
 
@@ -189,6 +218,27 @@ function SetupScreen({ state, dispatch }) {
 
 const labelStyle = { display: 'block', fontSize: 12, letterSpacing: 3, color: C.muted, textTransform: 'uppercase', marginBottom: 12 };
 
+function getTeamNames(state) {
+  if (state.mode === 'doubles') {
+    return {
+      a: [state.playerA, state.playerA2].filter(Boolean).join(' / ') || 'チーム A',
+      b: [state.playerB, state.playerB2].filter(Boolean).join(' / ') || 'チーム B',
+      a1: state.playerA || 'チーム A',
+      a2: state.playerA2 || '',
+      b1: state.playerB || 'チーム B',
+      b2: state.playerB2 || '',
+    };
+  }
+  return {
+    a: state.playerA || '選手 A',
+    b: state.playerB || '選手 B',
+    a1: state.playerA || '選手 A',
+    a2: '',
+    b1: state.playerB || '選手 B',
+    b2: '',
+  };
+}
+
 function GameScoreRow({ gameResults, playerA, playerB }) {
   if (gameResults.length === 0) return null;
   return (
@@ -207,14 +257,18 @@ function GameScoreRow({ gameResults, playerA, playerB }) {
 function PlayingScreen({ state, dispatch }) {
   const winsA = state.gameResults.filter(r => r.winner === 'A').length;
   const winsB = state.gameResults.filter(r => r.winner === 'B').length;
-  const nameA = state.playerA || '選手 A';
-  const nameB = state.playerB || '選手 B';
+  const names = getTeamNames(state);
+  const nameA = names.a;
+  const nameB = names.b;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', padding: '16px 0 0' }}>
       {/* Header */}
       <div style={{ padding: '0 20px 12px', textAlign: 'center' }}>
-        <div style={{ fontSize: 12, color: C.muted, letterSpacing: 3, marginBottom: 8 }}>GAME {state.currentGame}</div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+          <span style={{ fontSize: 12, color: C.muted, letterSpacing: 3 }}>GAME {state.currentGame}</span>
+          <span style={{ fontSize: 10, color: C.gold, border: `1px solid ${C.gold}`, borderRadius: 4, padding: '1px 6px', letterSpacing: 1 }}>{state.mode === 'doubles' ? 'ダブルス' : 'シングルス'}</span>
+        </div>
         <GameScoreRow gameResults={state.gameResults} playerA={nameA} playerB={nameB} />
         <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 10 }}>
           {[0, 1, 2].map(i => (
@@ -230,10 +284,13 @@ function PlayingScreen({ state, dispatch }) {
       <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
         {/* Player A button */}
         <button onClick={() => dispatch({ type: 'POINT', player: 'A' })}
-          style={{ background: 'rgba(59,130,246,0.08)', border: 'none', borderRight: `1px solid ${C.surfaceAlt}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: '24px 12px', minHeight: 320, userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation', transition: 'background 0.1s', active: { background: 'rgba(59,130,246,0.2)' } }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            <span style={{ fontSize: 12, color: C.blue, letterSpacing: 2, fontWeight: 600 }}>{nameA}</span>
-            {state.serveA && <span style={{ fontSize: 16 }}>🏸</span>}
+          style={{ background: 'rgba(59,130,246,0.08)', border: 'none', borderRight: `1px solid ${C.surfaceAlt}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: '24px 8px', minHeight: 320, userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation', transition: 'background 0.1s' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontSize: 12, color: C.blue, fontWeight: 700, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{names.a1}</span>
+              {state.serveA && <span style={{ fontSize: 14 }}>🏸</span>}
+            </div>
+            {names.a2 && <span style={{ fontSize: 11, color: 'rgba(59,130,246,0.7)', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{names.a2}</span>}
           </div>
           <div style={{ fontSize: 96, fontWeight: 800, lineHeight: 1, color: C.blue, fontVariantNumeric: 'tabular-nums' }}>{state.score.a}</div>
           <div style={{ marginTop: 20, color: 'rgba(59,130,246,0.4)', fontSize: 13, letterSpacing: 2 }}>タップ +1</div>
@@ -241,10 +298,13 @@ function PlayingScreen({ state, dispatch }) {
 
         {/* Player B button */}
         <button onClick={() => dispatch({ type: 'POINT', player: 'B' })}
-          style={{ background: 'rgba(239,68,68,0.08)', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: '24px 12px', minHeight: 320, userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation', transition: 'background 0.1s' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-            {!state.serveA && <span style={{ fontSize: 16 }}>🏸</span>}
-            <span style={{ fontSize: 12, color: C.red, letterSpacing: 2, fontWeight: 600 }}>{nameB}</span>
+          style={{ background: 'rgba(239,68,68,0.08)', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: '24px 8px', minHeight: 320, userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation', transition: 'background 0.1s' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              {!state.serveA && <span style={{ fontSize: 14 }}>🏸</span>}
+              <span style={{ fontSize: 12, color: C.red, fontWeight: 700, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{names.b1}</span>
+            </div>
+            {names.b2 && <span style={{ fontSize: 11, color: 'rgba(239,68,68,0.7)', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{names.b2}</span>}
           </div>
           <div style={{ fontSize: 96, fontWeight: 800, lineHeight: 1, color: C.red, fontVariantNumeric: 'tabular-nums' }}>{state.score.b}</div>
           <div style={{ marginTop: 20, color: 'rgba(239,68,68,0.4)', fontSize: 13, letterSpacing: 2 }}>タップ +1</div>
@@ -268,8 +328,9 @@ function PlayingScreen({ state, dispatch }) {
 
 function IntervalScreen({ state, dispatch }) {
   const isBetween = state.intervalType === 'betweengames';
-  const nameA = state.playerA || '選手 A';
-  const nameB = state.playerB || '選手 B';
+  const names = getTeamNames(state);
+  const nameA = names.a;
+  const nameB = names.b;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: 32, textAlign: 'center' }}>
@@ -324,9 +385,8 @@ function IntervalScreen({ state, dispatch }) {
 }
 
 function MatchOverScreen({ state, dispatch }) {
-  const nameA = state.playerA || '選手 A';
-  const nameB = state.playerB || '選手 B';
-  const winnerName = state.matchWinner === 'A' ? nameA : nameB;
+  const names = getTeamNames(state);
+  const winnerName = state.matchWinner === 'A' ? names.a : names.b;
   const winnerColor = state.matchWinner === 'A' ? C.blue : C.red;
 
   return (
