@@ -26,6 +26,8 @@ const INITIAL = {
   score: { a: 0, b: 0 },
   history: [],
   serveA: true,
+  swappedA: false, // doubles: whether A1/A2 have swapped from initial positions
+  swappedB: false,
   midIntervalDone: false,
   timerSecs: 0,
   intervalType: null,
@@ -60,11 +62,20 @@ function reducer(state, action) {
       const snap = {
         score: { ...state.score },
         serveA: state.serveA,
+        swappedA: state.swappedA,
+        swappedB: state.swappedB,
         midIntervalDone: state.midIntervalDone,
         gameResults: [...state.gameResults],
         currentGame: state.currentGame,
       };
       const newHistory = [...state.history, snap];
+
+      // Doubles: serving side wins → their players swap courts. Receiving side wins → positions unchanged.
+      const servingSideWon = (player === 'A') === state.serveA;
+      const newSwappedA = state.mode === 'doubles' && servingSideWon && state.serveA
+        ? !state.swappedA : state.swappedA;
+      const newSwappedB = state.mode === 'doubles' && servingSideWon && !state.serveA
+        ? !state.swappedB : state.swappedB;
 
       const winner = checkGameWin(newScore.a, newScore.b, state.gamePoints);
       if (winner) {
@@ -73,25 +84,25 @@ function reducer(state, action) {
         const winsB = newResults.filter(r => r.winner === 'B').length;
 
         if (winsA === 2 || winsB === 2) {
-          return { ...state, phase: 'matchOver', score: newScore, gameResults: newResults, matchWinner: winsA === 2 ? 'A' : 'B', history: newHistory, serveA: newServeA };
+          return { ...state, phase: 'matchOver', score: newScore, gameResults: newResults, matchWinner: winsA === 2 ? 'A' : 'B', history: newHistory, serveA: newServeA, swappedA: newSwappedA, swappedB: newSwappedB };
         }
-        return { ...state, phase: 'interval', intervalType: 'betweengames', timerSecs: state.intervalMins * 60, score: newScore, gameResults: newResults, serveA: newServeA, history: newHistory };
+        return { ...state, phase: 'interval', intervalType: 'betweengames', timerSecs: state.intervalMins * 60, score: newScore, gameResults: newResults, serveA: newServeA, swappedA: newSwappedA, swappedB: newSwappedB, history: newHistory };
       }
 
       const intPt = getIntervalPoint(state.gamePoints);
       const newMax = Math.max(newScore.a, newScore.b);
       const oldMax = Math.max(state.score.a, state.score.b);
       if (!state.midIntervalDone && oldMax < intPt && newMax >= intPt) {
-        return { ...state, phase: 'interval', intervalType: 'midgame', timerSecs: state.intervalMins * 60, score: newScore, serveA: newServeA, midIntervalDone: true, history: newHistory };
+        return { ...state, phase: 'interval', intervalType: 'midgame', timerSecs: state.intervalMins * 60, score: newScore, serveA: newServeA, swappedA: newSwappedA, swappedB: newSwappedB, midIntervalDone: true, history: newHistory };
       }
 
-      return { ...state, score: newScore, serveA: newServeA, history: newHistory };
+      return { ...state, score: newScore, serveA: newServeA, swappedA: newSwappedA, swappedB: newSwappedB, history: newHistory };
     }
 
     case 'UNDO': {
       if (state.history.length === 0) return state;
       const snap = state.history[state.history.length - 1];
-      return { ...state, phase: 'playing', score: snap.score, serveA: snap.serveA, midIntervalDone: snap.midIntervalDone, gameResults: snap.gameResults, currentGame: snap.currentGame, history: state.history.slice(0, -1), timerSecs: 0, intervalType: null, matchWinner: null };
+      return { ...state, phase: 'playing', score: snap.score, serveA: snap.serveA, swappedA: snap.swappedA, swappedB: snap.swappedB, midIntervalDone: snap.midIntervalDone, gameResults: snap.gameResults, currentGame: snap.currentGame, history: state.history.slice(0, -1), timerSecs: 0, intervalType: null, matchWinner: null };
     }
 
     case 'TICK':
@@ -100,7 +111,7 @@ function reducer(state, action) {
     case 'RESUME':
       if (state.intervalType === 'betweengames') {
         const lastWinner = state.gameResults[state.gameResults.length - 1]?.winner;
-        return { ...state, phase: 'playing', currentGame: state.currentGame + 1, score: { a: 0, b: 0 }, midIntervalDone: false, timerSecs: 0, intervalType: null, serveA: lastWinner === 'A' };
+        return { ...state, phase: 'playing', currentGame: state.currentGame + 1, score: { a: 0, b: 0 }, midIntervalDone: false, timerSecs: 0, intervalType: null, serveA: lastWinner === 'A', swappedA: false, swappedB: false };
       }
       return { ...state, phase: 'playing', timerSecs: 0, intervalType: null };
 
@@ -218,6 +229,27 @@ function SetupScreen({ state, dispatch }) {
 
 const labelStyle = { display: 'block', fontSize: 12, letterSpacing: 3, color: C.muted, textTransform: 'uppercase', marginBottom: 12 };
 
+// Returns court positions and current server/receiver for doubles
+function getDoublesPositions(state) {
+  if (state.mode !== 'doubles') return null;
+  // swapped=false: player1(A/B) in right, player2(A2/B2) in left
+  // swapped=true:  player2 in right, player1 in left
+  const aRight = state.swappedA ? 'a2' : 'a1';
+  const aLeft  = state.swappedA ? 'a1' : 'a2';
+  const bRight = state.swappedB ? 'b2' : 'b1';
+  const bLeft  = state.swappedB ? 'b1' : 'b2';
+
+  // Serving side's score determines service court (even=right, odd=left)
+  const servingScore = state.serveA ? state.score.a : state.score.b;
+  const serverInRight = servingScore % 2 === 0;
+
+  const server   = state.serveA ? (serverInRight ? aRight : aLeft) : (serverInRight ? bRight : bLeft);
+  // Receiver is in the same-named court on the other side (diagonally opposite)
+  const receiver = state.serveA ? (serverInRight ? bRight : bLeft) : (serverInRight ? aRight : aLeft);
+
+  return { aRight, aLeft, bRight, bLeft, server, receiver };
+}
+
 function getTeamNames(state) {
   if (state.mode === 'doubles') {
     return {
@@ -254,12 +286,27 @@ function GameScoreRow({ gameResults, playerA, playerB }) {
   );
 }
 
+// Player row inside score button for doubles (shows court + serve/receive indicator)
+function DoublesPlayerRow({ name, court, isServer, isReceiver, color }) {
+  const dim = `rgba(${color === 'blue' ? '59,130,246' : '239,68,68'},0.6)`;
+  const bright = color === 'blue' ? C.blue : C.red;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 5, height: 22 }}>
+      <span style={{ fontSize: 10, color: dim, background: `rgba(${color === 'blue' ? '59,130,246' : '239,68,68'},0.12)`, borderRadius: 4, padding: '1px 5px', minWidth: 20, textAlign: 'center', flexShrink: 0 }}>{court}</span>
+      <span style={{ fontSize: 12, color: bright, fontWeight: isServer || isReceiver ? 700 : 400, maxWidth: 90, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{name}</span>
+      {isServer && <span style={{ fontSize: 13, flexShrink: 0 }}>🏸</span>}
+      {isReceiver && <span style={{ fontSize: 11, color: dim, flexShrink: 0 }}>◎</span>}
+    </div>
+  );
+}
+
 function PlayingScreen({ state, dispatch }) {
   const winsA = state.gameResults.filter(r => r.winner === 'A').length;
   const winsB = state.gameResults.filter(r => r.winner === 'B').length;
   const names = getTeamNames(state);
   const nameA = names.a;
   const nameB = names.b;
+  const dbl = getDoublesPositions(state);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', padding: '16px 0 0' }}>
@@ -285,13 +332,19 @@ function PlayingScreen({ state, dispatch }) {
         {/* Player A button */}
         <button onClick={() => dispatch({ type: 'POINT', player: 'A' })}
           style={{ background: 'rgba(59,130,246,0.08)', border: 'none', borderRight: `1px solid ${C.surfaceAlt}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: '24px 8px', minHeight: 320, userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation', transition: 'background 0.1s' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginBottom: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ fontSize: 12, color: C.blue, fontWeight: 700, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{names.a1}</span>
-              {state.serveA && <span style={{ fontSize: 14 }}>🏸</span>}
+          {dbl ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 16 }}>
+              <DoublesPlayerRow name={dbl.aRight === 'a1' ? names.a1 : names.a2} court="右" isServer={dbl.server === dbl.aRight} isReceiver={dbl.receiver === dbl.aRight} color="blue" />
+              <DoublesPlayerRow name={dbl.aLeft  === 'a1' ? names.a1 : names.a2} court="左" isServer={dbl.server === dbl.aLeft}  isReceiver={dbl.receiver === dbl.aLeft}  color="blue" />
             </div>
-            {names.a2 && <span style={{ fontSize: 11, color: 'rgba(59,130,246,0.7)', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{names.a2}</span>}
-          </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span style={{ fontSize: 12, color: C.blue, fontWeight: 700, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{names.a1}</span>
+                {state.serveA && <span style={{ fontSize: 14 }}>🏸</span>}
+              </div>
+            </div>
+          )}
           <div style={{ fontSize: 96, fontWeight: 800, lineHeight: 1, color: C.blue, fontVariantNumeric: 'tabular-nums' }}>{state.score.a}</div>
           <div style={{ marginTop: 20, color: 'rgba(59,130,246,0.4)', fontSize: 13, letterSpacing: 2 }}>タップ +1</div>
         </button>
@@ -299,13 +352,19 @@ function PlayingScreen({ state, dispatch }) {
         {/* Player B button */}
         <button onClick={() => dispatch({ type: 'POINT', player: 'B' })}
           style={{ background: 'rgba(239,68,68,0.08)', border: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: '24px 8px', minHeight: 320, userSelect: 'none', WebkitUserSelect: 'none', touchAction: 'manipulation', transition: 'background 0.1s' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginBottom: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              {!state.serveA && <span style={{ fontSize: 14 }}>🏸</span>}
-              <span style={{ fontSize: 12, color: C.red, fontWeight: 700, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{names.b1}</span>
+          {dbl ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginBottom: 16 }}>
+              <DoublesPlayerRow name={dbl.bRight === 'b1' ? names.b1 : names.b2} court="右" isServer={dbl.server === dbl.bRight} isReceiver={dbl.receiver === dbl.bRight} color="red" />
+              <DoublesPlayerRow name={dbl.bLeft  === 'b1' ? names.b1 : names.b2} court="左" isServer={dbl.server === dbl.bLeft}  isReceiver={dbl.receiver === dbl.bLeft}  color="red" />
             </div>
-            {names.b2 && <span style={{ fontSize: 11, color: 'rgba(239,68,68,0.7)', maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{names.b2}</span>}
-          </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, marginBottom: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                {!state.serveA && <span style={{ fontSize: 14 }}>🏸</span>}
+                <span style={{ fontSize: 12, color: C.red, fontWeight: 700, maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{names.b1}</span>
+              </div>
+            </div>
+          )}
           <div style={{ fontSize: 96, fontWeight: 800, lineHeight: 1, color: C.red, fontVariantNumeric: 'tabular-nums' }}>{state.score.b}</div>
           <div style={{ marginTop: 20, color: 'rgba(239,68,68,0.4)', fontSize: 13, letterSpacing: 2 }}>タップ +1</div>
         </button>
