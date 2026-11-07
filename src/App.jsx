@@ -77,9 +77,9 @@ function recommendCourses(theme, lifePath) {
 const STYLE = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Josefin+Sans:wght@100;300;400&display=swap');
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-  :root { --gold: #b8a060; --gold-dim: rgba(184,160,96,0.12); --bg: #09090e; --surface: rgba(255,255,255,0.025); --text: #f5f0ea; --muted: #a09890; }
-  body { background: var(--bg); color: var(--text); font-family: 'Josefin Sans', sans-serif; font-weight: 300; min-height: 100vh; }
-  .app { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 48px 20px 80px; background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(184,160,96,0.08), transparent 70%); }
+  :root { --gold: #b8a060; --gold-dim: rgba(184,160,96,0.12); --bg: #10182c; --surface: rgba(255,255,255,0.05); --text: #f5f0ea; --muted: #b3ab9d; }
+  body { background: linear-gradient(180deg, #1e2a4a 0%, #141d33 42%, #0d1322 100%); background-attachment: fixed; color: var(--text); font-family: 'Josefin Sans', sans-serif; font-weight: 300; min-height: 100vh; }
+  .app { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 48px 20px 80px; background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(184,160,96,0.13), transparent 70%), radial-gradient(ellipse 90% 55% at 50% 115%, rgba(84,104,168,0.18), transparent 70%); }
   ::selection { background: rgba(184,160,96,0.35); }
   .wrap { width: 100%; max-width: 560px; }
   .header { text-align: center; margin-bottom: 48px; }
@@ -97,12 +97,12 @@ const STYLE = `
   .section-label { font-size: 11px; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; margin-bottom: 28px; }
   .field { margin-bottom: 28px; }
   .field label { display: block; font-size: 11px; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
-  .field input, .field textarea { width: 100%; background: transparent; border: none; border-bottom: 1px solid #222018; padding: 10px 0; font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; color: var(--text); outline: none; transition: border-color 0.3s; }
+  .field input, .field textarea { width: 100%; background: transparent; border: none; border-bottom: 1px solid #39415e; padding: 10px 0; font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; color: var(--text); outline: none; transition: border-color 0.3s; }
   .field input:focus, .field textarea:focus { border-color: var(--gold); background: rgba(184,160,96,0.03); }
-  .field input::placeholder, .field textarea::placeholder { color: #5a554c; }
+  .field input::placeholder, .field textarea::placeholder { color: #7d7668; }
   .field textarea { resize: none; height: 64px; }
   .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
-  .theme-btn { background: transparent; border: 1px solid #222018; color: var(--muted); padding: 13px 8px; font-family: 'Josefin Sans', sans-serif; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.25s; }
+  .theme-btn { background: transparent; border: 1px solid #39415e; color: var(--muted); padding: 13px 8px; font-family: 'Josefin Sans', sans-serif; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.25s; }
   .theme-btn.selected { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
   .theme-btn:hover { border-color: rgba(184,160,96,0.5); color: #d8d2c8; }
   .btn { width: 100%; background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 17px; font-family: 'Josefin Sans', sans-serif; font-size: 12px; font-weight: 300; letter-spacing: 6px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; margin-top: 8px; }
@@ -112,7 +112,7 @@ const STYLE = `
   .loading-symbol { font-family: 'Cormorant Garamond', serif; font-size: 56px; color: var(--gold); animation: breathe 2s ease-in-out infinite; }
   @keyframes breathe { 0%,100% { opacity: 0.2; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } }
   .loading-text { font-size: 12px; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; margin-top: 20px; }
-  .loading-bar { width: 160px; height: 1px; background: #222018; margin: 24px auto 0; overflow: hidden; }
+  .loading-bar { width: 160px; height: 1px; background: #39415e; margin: 24px auto 0; overflow: hidden; }
   .loading-bar::after { content: ''; display: block; width: 40%; height: 100%; background: var(--gold); animation: slide 1.2s ease-in-out infinite; }
   @keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(400%); } }
   .result { animation: rise 0.7s ease-out; }
@@ -123,10 +123,10 @@ const STYLE = `
   .num-value { font-family: 'Josefin Sans', sans-serif; font-size: 44px; font-weight: 300; color: var(--gold); line-height: 1; letter-spacing: 2px; text-shadow: 0 0 32px rgba(184,160,96,0.35); }
   .num-label { font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
   .result-name { font-size: 12px; letter-spacing: 5px; color: var(--muted); text-transform: uppercase; margin-top: 16px; }
-  .report-box { background: rgba(255,255,255,0.04); border: 1px solid var(--gold-dim); padding: 28px; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; line-height: 1.9; color: #ddd6cc; white-space: pre-wrap; margin-bottom: 36px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
-  .bridge-text { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 300; line-height: 1.9; color: #c4bdb0; margin-bottom: 28px; padding: 24px; border-left: 1px solid var(--gold); }
+  .report-box { background: rgba(255,255,255,0.06); border: 1px solid var(--gold-dim); padding: 28px; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; line-height: 1.9; color: #ede7da; white-space: pre-wrap; margin-bottom: 36px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
+  .bridge-text { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 300; line-height: 1.9; color: #d5cec0; margin-bottom: 28px; padding: 24px; border-left: 1px solid var(--gold); }
   .course-section-label { font-size: 12px; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; text-align: center; margin-bottom: 20px; }
-  .course-card { border: 1px solid #222018; padding: 20px 24px; margin-bottom: 10px; transition: all 0.25s; cursor: pointer; text-decoration: none; display: block; }
+  .course-card { border: 1px solid #39415e; background: var(--surface); padding: 20px 24px; margin-bottom: 10px; transition: all 0.25s; cursor: pointer; text-decoration: none; display: block; }
   .course-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
   .result a.course-card { animation: rise 0.6s ease-out both; }
   .result a.course-card:nth-of-type(2) { animation-delay: 0.1s; }
@@ -137,11 +137,11 @@ const STYLE = `
   .card-price { font-size: 12px; letter-spacing: 2px; color: var(--gold); white-space: nowrap; padding-top: 2px; }
   .card-tag { font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
   .card-arrow { font-size: 13px; color: var(--gold); margin-top: 10px; letter-spacing: 2px; }
-  .line-box { border: 1px solid var(--gold-dim); padding: 28px 24px; text-align: center; margin-top: 32px; }
-  .line-text { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 300; line-height: 1.9; color: #c4bdb0; margin-bottom: 18px; }
+  .line-box { border: 1px solid var(--gold-dim); background: rgba(255,255,255,0.03); padding: 28px 24px; text-align: center; margin-top: 32px; }
+  .line-text { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 300; line-height: 1.9; color: #d5cec0; margin-bottom: 18px; }
   .line-btn { display: inline-block; border: 1px solid var(--gold); color: var(--gold); padding: 13px 30px; font-family: 'Josefin Sans', sans-serif; font-size: 12px; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.3s; }
   .line-btn:hover { background: var(--gold); color: var(--bg); }
-  .reset-btn { background: transparent; border: none; color: #6a6460; font-family: 'Josefin Sans', sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; display: block; width: 100%; text-align: center; margin-top: 32px; transition: color 0.3s; }
+  .reset-btn { background: transparent; border: none; color: #8d8578; font-family: 'Josefin Sans', sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; display: block; width: 100%; text-align: center; margin-top: 32px; transition: color 0.3s; }
   .reset-btn:hover { color: var(--gold); }
   .error { font-size: 10px; letter-spacing: 2px; color: #8a4040; text-align: center; margin-top: 12px; }
 `;
