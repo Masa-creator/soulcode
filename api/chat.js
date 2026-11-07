@@ -1,4 +1,4 @@
-const MODEL = "claude-sonnet-4-20250514";
+const MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-4-5";
 const MAX_TOKENS = 1500;
 
 function buildPrompt({ kanjiName, theme, situation, lifePath, soulUrge, expression}) {
