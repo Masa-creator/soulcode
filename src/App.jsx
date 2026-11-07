@@ -75,18 +75,18 @@ function recommendCourses(theme, lifePath) {
 }
 
 const STYLE = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Josefin+Sans:wght@100;300;400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Josefin+Sans:wght@300;400;600&display=swap');
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
   :root { --gold: #b8a060; --gold-dim: rgba(184,160,96,0.12); --bg: #10182c; --surface: rgba(255,255,255,0.05); --text: #f5f0ea; --muted: #b3ab9d; }
-  body { background: linear-gradient(180deg, #1e2a4a 0%, #141d33 42%, #0d1322 100%); background-attachment: fixed; color: var(--text); font-family: 'Josefin Sans', sans-serif; font-weight: 300; min-height: 100vh; }
-  .app { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 48px 20px 80px; background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(184,160,96,0.13), transparent 70%), radial-gradient(ellipse 90% 55% at 50% 115%, rgba(84,104,168,0.18), transparent 70%); }
+  body { background: linear-gradient(180deg, #1e2a4a 0%, #141d33 42%, #0d1322 100%); background-attachment: fixed; color: var(--text); font-family: 'Josefin Sans', sans-serif; font-weight: 400; min-height: 100vh; }
+  .app { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 48px 20px 80px; background: linear-gradient(112deg, transparent 40%, rgba(176,190,232,0.05) 47%, rgba(235,240,255,0.09) 50%, rgba(176,190,232,0.05) 53%, transparent 60%), url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27240%27%20height%3D%27240%27%3E%3Ccircle%20cx%3D%2730%27%20cy%3D%2740%27%20r%3D%271.0%27%20fill%3D%27%23ffffff%27%20fill-opacity%3D%270.7%27%2F%3E%3Ccircle%20cx%3D%27120%27%20cy%3D%2790%27%20r%3D%270.8%27%20fill%3D%27%23ffffff%27%20fill-opacity%3D%270.5%27%2F%3E%3Ccircle%20cx%3D%27200%27%20cy%3D%2730%27%20r%3D%271.1%27%20fill%3D%27%23ffffff%27%20fill-opacity%3D%270.8%27%2F%3E%3Ccircle%20cx%3D%2770%27%20cy%3D%27160%27%20r%3D%270.7%27%20fill%3D%27%23ffffff%27%20fill-opacity%3D%270.45%27%2F%3E%3Ccircle%20cx%3D%27170%27%20cy%3D%27200%27%20r%3D%270.9%27%20fill%3D%27%23ffffff%27%20fill-opacity%3D%270.6%27%2F%3E%3Ccircle%20cx%3D%27230%27%20cy%3D%27130%27%20r%3D%270.6%27%20fill%3D%27%23ffffff%27%20fill-opacity%3D%270.4%27%2F%3E%3C%2Fsvg%3E"), url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27420%27%20height%3D%27420%27%3E%3Ccircle%20cx%3D%2780%27%20cy%3D%27120%27%20r%3D%271.4%27%20fill%3D%27%23e8d9a8%27%20fill-opacity%3D%270.8%27%2F%3E%3Ccircle%20cx%3D%27300%27%20cy%3D%2760%27%20r%3D%271.2%27%20fill%3D%27%23ffffff%27%20fill-opacity%3D%270.7%27%2F%3E%3Ccircle%20cx%3D%27210%27%20cy%3D%27300%27%20r%3D%271.5%27%20fill%3D%27%23e8d9a8%27%20fill-opacity%3D%270.6%27%2F%3E%3Ccircle%20cx%3D%27380%27%20cy%3D%27210%27%20r%3D%271.1%27%20fill%3D%27%23ffffff%27%20fill-opacity%3D%270.55%27%2F%3E%3C%2Fsvg%3E"), radial-gradient(ellipse 80% 50% at 50% -10%, rgba(184,160,96,0.13), transparent 70%), radial-gradient(ellipse 90% 55% at 50% 115%, rgba(84,104,168,0.18), transparent 70%); background-size: auto, 260px 260px, 420px 420px, auto, auto; background-repeat: no-repeat, repeat, repeat, no-repeat, no-repeat; }
   ::selection { background: rgba(184,160,96,0.35); }
   .wrap { width: 100%; max-width: 560px; }
   .header { text-align: center; margin-bottom: 48px; }
   .brand { font-size: 11px; letter-spacing: 7px; color: var(--gold); text-transform: uppercase; margin-bottom: 20px; }
   .footer { text-align: center; font-size: 8px; letter-spacing: 4px; color: var(--muted); padding: 40px 0 0; text-transform: uppercase; }
-  .therapist-sig { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 300; color: var(--gold); text-align: right; letter-spacing: 3px; margin-top: -20px; margin-bottom: 36px; padding-right: 4px; }
-  .logo { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: clamp(52px, 12vw, 78px); line-height: 0.88; color: var(--text); }
+  .therapist-sig { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 400; color: var(--gold); text-align: right; letter-spacing: 3px; margin-top: -20px; margin-bottom: 36px; padding-right: 4px; }
+  .logo { font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: clamp(52px, 12vw, 78px); line-height: 0.88; color: var(--text); }
   .logo em { font-style: italic; color: var(--gold); }
   .subtitle { font-size: 12px; letter-spacing: 6px; color: var(--gold); font-family: 'Josefin Sans', sans-serif; font-weight: 300; margin-top: 10px; }
   .tagline { font-size: 11px; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; margin-top: 8px; }
@@ -97,7 +97,7 @@ const STYLE = `
   .section-label { font-size: 11px; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; margin-bottom: 28px; }
   .field { margin-bottom: 28px; }
   .field label { display: block; font-size: 11px; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
-  .field input, .field textarea { width: 100%; background: transparent; border: none; border-bottom: 1px solid #39415e; padding: 10px 0; font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; color: var(--text); outline: none; transition: border-color 0.3s; }
+  .field input, .field textarea { width: 100%; background: transparent; border: none; border-bottom: 1px solid #39415e; padding: 10px 0; font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 400; color: var(--text); outline: none; transition: border-color 0.3s; }
   .field input:focus, .field textarea:focus { border-color: var(--gold); background: rgba(184,160,96,0.03); }
   .field input::placeholder, .field textarea::placeholder { color: #7d7668; }
   .field textarea { resize: none; height: 64px; }
@@ -120,11 +120,11 @@ const STYLE = `
   .result-header { text-align: center; margin-bottom: 32px; }
   .numbers-row { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
   .num-item { text-align: center; }
-  .num-value { font-family: 'Josefin Sans', sans-serif; font-size: 44px; font-weight: 300; color: var(--gold); line-height: 1; letter-spacing: 2px; text-shadow: 0 0 32px rgba(184,160,96,0.35); }
+  .num-value { font-family: 'Josefin Sans', sans-serif; font-size: 44px; font-weight: 400; color: var(--gold); line-height: 1; letter-spacing: 2px; text-shadow: 0 0 32px rgba(184,160,96,0.35); }
   .num-label { font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
   .result-name { font-size: 12px; letter-spacing: 5px; color: var(--muted); text-transform: uppercase; margin-top: 16px; }
-  .report-box { background: rgba(255,255,255,0.06); border: 1px solid var(--gold-dim); padding: 28px; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; line-height: 1.9; color: #ede7da; white-space: pre-wrap; margin-bottom: 36px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
-  .bridge-text { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 300; line-height: 1.9; color: #d5cec0; margin-bottom: 28px; padding: 24px; border-left: 1px solid var(--gold); }
+  .report-box { background: rgba(255,255,255,0.06); border: 1px solid var(--gold-dim); padding: 28px; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 500; line-height: 1.9; color: #ede7da; white-space: pre-wrap; margin-bottom: 36px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
+  .bridge-text { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 500; line-height: 1.9; color: #d5cec0; margin-bottom: 28px; padding: 24px; border-left: 1px solid var(--gold); }
   .course-section-label { font-size: 12px; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; text-align: center; margin-bottom: 20px; }
   .course-card { border: 1px solid #39415e; background: var(--surface); padding: 20px 24px; margin-bottom: 10px; transition: all 0.25s; cursor: pointer; text-decoration: none; display: block; }
   .course-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
@@ -133,12 +133,12 @@ const STYLE = `
   .result a.course-card:nth-of-type(3) { animation-delay: 0.2s; }
   .course-card.primary { border-color: var(--gold); background: var(--gold-dim); }
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-  .card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--text); }
+  .card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; color: var(--text); }
   .card-price { font-size: 12px; letter-spacing: 2px; color: var(--gold); white-space: nowrap; padding-top: 2px; }
   .card-tag { font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
   .card-arrow { font-size: 13px; color: var(--gold); margin-top: 10px; letter-spacing: 2px; }
   .line-box { border: 1px solid var(--gold-dim); background: rgba(255,255,255,0.03); padding: 28px 24px; text-align: center; margin-top: 32px; }
-  .line-text { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 300; line-height: 1.9; color: #d5cec0; margin-bottom: 18px; }
+  .line-text { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 500; line-height: 1.9; color: #d5cec0; margin-bottom: 18px; }
   .line-btn { display: inline-block; border: 1px solid var(--gold); color: var(--gold); padding: 13px 30px; font-family: 'Josefin Sans', sans-serif; font-size: 12px; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.3s; }
   .line-btn:hover { background: var(--gold); color: var(--bg); }
   .reset-btn { background: transparent; border: none; color: #8d8578; font-family: 'Josefin Sans', sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; display: block; width: 100%; text-align: center; margin-top: 32px; transition: color 0.3s; }
