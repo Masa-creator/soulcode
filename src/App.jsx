@@ -75,7 +75,7 @@ function recommendCourses(theme, lifePath) {
 }
 
 const STYLE = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Josefin+Sans:wght@300;400;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Josefin+Sans:wght@300;400;600&display=swap');
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
   :root { --gold: #b8a060; --gold-dim: rgba(184,160,96,0.12); --bg: #10182c; --surface: rgba(255,255,255,0.05); --text: #f5f0ea; --muted: #b3ab9d; }
   body { background: linear-gradient(180deg, #1e2a4a 0%, #141d33 42%, #0d1322 100%); background-attachment: fixed; color: var(--text); font-family: 'Josefin Sans', sans-serif; font-weight: 400; min-height: 100vh; }
@@ -85,8 +85,8 @@ const STYLE = `
   .header { text-align: center; margin-bottom: 48px; }
   .brand { font-size: 11px; letter-spacing: 7px; color: var(--gold); text-transform: uppercase; margin-bottom: 20px; }
   .footer { text-align: center; font-size: 8px; letter-spacing: 4px; color: var(--muted); padding: 40px 0 0; text-transform: uppercase; }
-  .therapist-sig { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 400; color: var(--gold); text-align: right; letter-spacing: 3px; margin-top: -20px; margin-bottom: 36px; padding-right: 4px; }
-  .logo { font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: clamp(52px, 12vw, 78px); line-height: 0.88; color: var(--text); }
+  .therapist-sig { font-family: 'Cormorant Garamond', serif; font-size: 14px; font-weight: 500; color: var(--gold); text-align: right; letter-spacing: 3px; margin-top: -20px; margin-bottom: 36px; padding-right: 4px; }
+  .logo { font-family: 'Cormorant Garamond', serif; font-weight: 500; font-size: clamp(52px, 12vw, 78px); line-height: 0.88; color: var(--text); }
   .logo em { font-style: italic; color: var(--gold); }
   .subtitle { font-size: 12px; letter-spacing: 6px; color: var(--gold); font-family: 'Josefin Sans', sans-serif; font-weight: 300; margin-top: 10px; }
   .tagline { font-size: 11px; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; margin-top: 8px; }
@@ -94,10 +94,10 @@ const STYLE = `
   .steps { display: flex; justify-content: center; gap: 8px; margin-bottom: 32px; }
   .step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
   .step-dot.active { background: var(--gold); }
-  .section-label { font-size: 11px; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; margin-bottom: 28px; }
+  .section-label { font-size: 11px; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; margin-bottom: 28px; font-weight: 600; }
   .field { margin-bottom: 28px; }
   .field label { display: block; font-size: 11px; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
-  .field input, .field textarea { width: 100%; background: transparent; border: none; border-bottom: 1px solid #39415e; padding: 10px 0; font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 400; color: var(--text); outline: none; transition: border-color 0.3s; }
+  .field input, .field textarea { width: 100%; background: transparent; border: none; border-bottom: 1px solid #39415e; padding: 10px 0; font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 500; color: var(--text); outline: none; transition: border-color 0.3s; }
   .field input:focus, .field textarea:focus { border-color: var(--gold); background: rgba(184,160,96,0.03); }
   .field input::placeholder, .field textarea::placeholder { color: #7d7668; }
   .field textarea { resize: none; height: 64px; }
@@ -105,7 +105,7 @@ const STYLE = `
   .theme-btn { background: transparent; border: 1px solid #39415e; color: var(--muted); padding: 13px 8px; font-family: 'Josefin Sans', sans-serif; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.25s; }
   .theme-btn.selected { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
   .theme-btn:hover { border-color: rgba(184,160,96,0.5); color: #d8d2c8; }
-  .btn { width: 100%; background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 17px; font-family: 'Josefin Sans', sans-serif; font-size: 12px; font-weight: 300; letter-spacing: 6px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; margin-top: 8px; }
+  .btn { width: 100%; background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 17px; font-family: 'Josefin Sans', sans-serif; font-size: 12px; font-weight: 400; letter-spacing: 6px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; margin-top: 8px; }
   .btn:hover:not(:disabled) { background: var(--gold); color: var(--bg); box-shadow: 0 8px 32px rgba(184,160,96,0.25); }
   .btn:disabled { opacity: 0.3; cursor: not-allowed; }
   .loading { text-align: center; padding: 64px 0; }
@@ -120,12 +120,12 @@ const STYLE = `
   .result-header { text-align: center; margin-bottom: 32px; }
   .numbers-row { display: flex; justify-content: center; gap: 24px; margin-bottom: 12px; flex-wrap: wrap; }
   .num-item { text-align: center; }
-  .num-value { font-family: 'Josefin Sans', sans-serif; font-size: 44px; font-weight: 400; color: var(--gold); line-height: 1; letter-spacing: 2px; text-shadow: 0 0 32px rgba(184,160,96,0.35); }
+  .num-value { font-family: 'Josefin Sans', sans-serif; font-size: 44px; font-weight: 600; color: var(--gold); line-height: 1; letter-spacing: 2px; text-shadow: 0 0 32px rgba(184,160,96,0.35); }
   .num-label { font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
   .result-name { font-size: 12px; letter-spacing: 5px; color: var(--muted); text-transform: uppercase; margin-top: 16px; }
-  .report-box { background: rgba(255,255,255,0.06); border: 1px solid var(--gold-dim); padding: 28px; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 500; line-height: 1.9; color: #ede7da; white-space: pre-wrap; margin-bottom: 36px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
-  .bridge-text { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 500; line-height: 1.9; color: #d5cec0; margin-bottom: 28px; padding: 24px; border-left: 1px solid var(--gold); }
-  .course-section-label { font-size: 12px; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; text-align: center; margin-bottom: 20px; }
+  .report-box { background: rgba(255,255,255,0.06); border: 1px solid var(--gold-dim); padding: 28px; font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; line-height: 1.9; color: #ede7da; white-space: pre-wrap; margin-bottom: 36px; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
+  .bridge-text { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 600; line-height: 1.9; color: #d5cec0; margin-bottom: 28px; padding: 24px; border-left: 1px solid var(--gold); }
+  .course-section-label { font-size: 12px; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; text-align: center; margin-bottom: 20px; font-weight: 600; }
   .course-card { border: 1px solid #39415e; background: var(--surface); padding: 20px 24px; margin-bottom: 10px; transition: all 0.25s; cursor: pointer; text-decoration: none; display: block; }
   .course-card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
   .result a.course-card { animation: rise 0.6s ease-out both; }
@@ -133,13 +133,13 @@ const STYLE = `
   .result a.course-card:nth-of-type(3) { animation-delay: 0.2s; }
   .course-card.primary { border-color: var(--gold); background: var(--gold-dim); }
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-  .card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500; color: var(--text); }
+  .card-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--text); }
   .card-price { font-size: 12px; letter-spacing: 2px; color: var(--gold); white-space: nowrap; padding-top: 2px; }
   .card-tag { font-size: 11px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
   .card-arrow { font-size: 13px; color: var(--gold); margin-top: 10px; letter-spacing: 2px; }
   .line-box { border: 1px solid var(--gold-dim); background: rgba(255,255,255,0.03); padding: 28px 24px; text-align: center; margin-top: 32px; }
-  .line-text { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 500; line-height: 1.9; color: #d5cec0; margin-bottom: 18px; }
-  .line-btn { display: inline-block; border: 1px solid var(--gold); color: var(--gold); padding: 13px 30px; font-family: 'Josefin Sans', sans-serif; font-size: 12px; font-weight: 300; letter-spacing: 4px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.3s; }
+  .line-text { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600; line-height: 1.9; color: #d5cec0; margin-bottom: 18px; }
+  .line-btn { display: inline-block; border: 1px solid var(--gold); color: var(--gold); padding: 13px 30px; font-family: 'Josefin Sans', sans-serif; font-size: 12px; font-weight: 400; letter-spacing: 4px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.3s; }
   .line-btn:hover { background: var(--gold); color: var(--bg); }
   .reset-btn { background: transparent; border: none; color: #8d8578; font-family: 'Josefin Sans', sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; display: block; width: 100%; text-align: center; margin-top: 32px; transition: color 0.3s; }
   .reset-btn:hover { color: var(--gold); }
