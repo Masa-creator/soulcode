@@ -90,6 +90,7 @@ const STYLE = `
   .logo em { font-style: italic; color: var(--gold); }
   .subtitle { font-size: 12px; letter-spacing: 6px; color: var(--gold); font-family: 'Josefin Sans', sans-serif; font-weight: 300; margin-top: 10px; }
   .tagline { font-size: 11px; letter-spacing: 4px; color: var(--muted); text-transform: uppercase; margin-top: 8px; }
+  .free-note { font-size: 12.5px; letter-spacing: 1px; color: #d5cec0; margin-top: 12px; line-height: 1.8; }
   .rule { width: 1px; height: 36px; background: linear-gradient(to bottom, transparent, var(--gold), transparent); margin: 0 auto 40px; }
   .steps { display: flex; justify-content: center; gap: 8px; margin-bottom: 32px; }
   .step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); transition: background 0.3s; }
@@ -209,6 +210,7 @@ export default function App() {
             <h1 className="logo">SOUL <em>CODE</em></h1>
             <p className="subtitle">宿命の調律</p>
             <p className="tagline">魂の設計図を読み解く精密鑑定</p>
+            <p className="free-note">LINEの無料診断「疲れの正体」｜生年月日とお名前から、あなたの数字を読み解きます（有料の精密鑑定とは別の、入口の無料診断です）</p>
           </div>
           {!loading && <div className="steps">{[1,2,3].map(s => <div key={s} className={`step-dot ${step >= s ? "active" : ""}`} />)}</div>}
           <div className="rule" />
@@ -251,15 +253,15 @@ export default function App() {
                 {kanjiName}さんの設計図の輪郭は、今お見せした通りです。ただし、これはまだ骨格に過ぎません。本来の鑑定では、カバラ数秘術に心理学・行動科学を融合させた独自の解析により、「なぜ今の状況が起きているか」「どの順番で何を変えるか」「いつが動き時か」を、{kanjiName}さんの現実に即して書面で設計します。以下の中から、今のあなたに最も近いものを選んでください。
               </div>
               <div className="rule" />
+              <div className="line-box">
+                <p className="line-text">この診断の続きは、公式LINEでお届けしています。あなたの誕生数の深掘りと、月ごとの数字の波を、無料で受け取れます。</p>
+                <a className="line-btn" href="https://lin.ee/tYqWJEy?openExternalBrowser=1" target="_blank" rel="noopener noreferrer" onClick={() => window.gtag?.("event", "line_link_click", { from: "diagnosis_result" })}>公式LINEで続きを受け取る（無料）</a>
+              </div>
               <p className="course-section-label">あなたに最適な鑑定プラン</p>
               {result.recommended.map((n, i) => {
                 const c = COURSES[n];
                 return <a key={n} href={MOSH_URLS[n]} target="_blank" rel="noopener noreferrer" className={`course-card ${i === 0 ? "primary" : ""}`} onClick={() => window.gtag?.("event", "mosh_link_click", { course_id: n, course_title: c.title, course_price: c.price, is_primary: i === 0 })}><div className="card-top"><div className="card-title">{c.title}</div><div className="card-price">{c.price}</div></div><div className="card-tag">{c.tag}</div><div className="card-arrow">→ 詳細・お申し込み</div></a>;
               })}
-              <div className="line-box">
-                <p className="line-text">あなたの誕生数の深掘りと、月ごとの運気の波は、公式LINEでお届けしています。</p>
-                <a className="line-btn" href="https://lin.ee/tYqWJEy?openExternalBrowser=1" target="_blank" rel="noopener noreferrer" onClick={() => window.gtag?.("event", "line_link_click", { from: "diagnosis_result" })}>公式LINEで続きを受け取る</a>
-              </div>
               <button className="reset-btn" onClick={reset}>← 別の診断をする</button>
             </div>
           )}
