@@ -11,6 +11,29 @@ const MOSH_URLS = {
   8: "https://mosh.jp/services/346386?openExternalBrowser=1",
 };
 
+const SAMPLE_KYUSEI_TEXT = `【九星気学かんたん鑑定】1990年1月15日生まれの方へ
+
+あなたの本命星は「二黒土星」、月命星は「九紫火星」です。本命星は性質の土台、月命星は内面や素の顔に出やすい傾向として読みます。
+
+■ あなたの性質の傾向
+派手さよりも、地道に積み上げることを信頼する方です。一度引き受けたことは手を抜かず、周りが諦めた後も静かに続けられます。変化への反応はゆっくりで、新しいやり方に飛びつくより、実績のある方法を確かめてから動く慎重さがあります。目立つことより「ちゃんとやれているか」を大事にする、縁の下の感覚の持ち主です。
+
+■ 人間関係で消耗しやすいパターン
+消耗の入口は「引き受けすぎ」です。頼まれると断る理由を探すより先に「自分がやれば済む」と考えて背負い、気づけば周りの分まで抱えています。助けを求めるのが遅いので、限界が来るまで誰にも気づかれません。頑張りが足りないのではなく、配分と「頼る」工程が抜けているズレです。
+
+■ 仕事での力の出方
+継続と蓄積がものを言う仕事、育てる仕事、面倒を見る仕事で力を発揮します。短期の勝負より、長い期間で信頼を積む進め方が向いています。ただし頑張りが「当たり前」として扱われやすく、評価や条件の交渉を後回しにしがちです。自分の働きを数字や記録で見える形にすることが、この星には特に大切です。
+
+■ 疲れ方と整え方
+疲れはじわじわ溜まって、ある日突然動けなくなる形で出やすい方です。整え方は、休む日を「空いたら」ではなく先に予定へ入れること。そして小さな頼みごとを人に渡す練習です。全部を自分で仕上げることが誠実さなのではなく、続く形に配り直すことも仕事のうちだと捉えると、消耗の速度が変わります。
+
+---
+
+■ 月命星が添える内面の傾向
+月命星の九紫火星は、内面に「ひらめきと情熱で物事を照らす方です。美しいもの、筋の通ったものへの感度が高く、曖昧なものをそのままにしておけません。」という顔を持ちます。本命星の出方と重ねて読むと、表の顔と素の自分のズレが見えてきます。
+
+最後にひとつ。今日お伝えした消耗のパターンは、あなたの欠点ではありません。性質と環境の「ズレ」の出方です。ズレの場所が分かれば、頑張り方を変えなくても、配分を変えるだけで楽になることがあります。`;
+
 const COURSES = {
   1: { title: "単発・簡易プラン", price: "9,800円", tag: "まず整理したい方へ" },
   2: { title: "恋愛特化プラン", price: "15,800円", tag: "恋愛の詰まりを解く" },
@@ -142,6 +165,14 @@ const STYLE = `
   .line-text { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600; line-height: 1.9; color: #d5cec0; margin-bottom: 18px; }
   .line-btn { display: inline-block; border: 1px solid var(--gold); color: var(--gold); padding: 13px 30px; font-family: 'Josefin Sans', sans-serif; font-size: 12px; font-weight: 400; letter-spacing: 4px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.3s; }
   .line-btn:hover { background: var(--gold); color: var(--bg); }
+  .sample-box { border: 1px solid #39415e; background: rgba(255,255,255,0.02); padding: 24px; margin-top: 28px; }
+  .sample-title { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 10px; text-align: center; }
+  .sample-note { font-size: 12px; line-height: 1.8; color: var(--muted); margin-bottom: 14px; }
+  .sample-details summary { cursor: pointer; color: var(--gold); font-size: 13px; letter-spacing: 1px; padding: 6px 0; }
+  .sample-body { white-space: pre-wrap; font-size: 13px; line-height: 1.9; color: #d5cec0; border-top: 1px solid #39415e; margin-top: 12px; padding-top: 16px; }
+  .sample-links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+  .sample-btn { flex: 1; min-width: 200px; text-align: center; border: 1px solid var(--gold); color: var(--gold); padding: 12px 10px; font-size: 12px; letter-spacing: 2px; text-decoration: none; transition: all 0.3s; display: block; }
+  .sample-btn:hover { background: var(--gold); color: var(--bg); }
   .reset-btn { background: transparent; border: none; color: #8d8578; font-family: 'Josefin Sans', sans-serif; font-size: 11px; letter-spacing: 4px; text-transform: uppercase; cursor: pointer; display: block; width: 100%; text-align: center; margin-top: 32px; transition: color 0.3s; }
   .reset-btn:hover { color: var(--gold); }
   .error { font-size: 10px; letter-spacing: 2px; color: #8a4040; text-align: center; margin-top: 12px; }
@@ -262,6 +293,18 @@ export default function App() {
                 const c = COURSES[n];
                 return <a key={n} href={MOSH_URLS[n]} target="_blank" rel="noopener noreferrer" className={`course-card ${i === 0 ? "primary" : ""}`} onClick={() => window.gtag?.("event", "mosh_link_click", { course_id: n, course_title: c.title, course_price: c.price, is_primary: i === 0 })}><div className="card-top"><div className="card-title">{c.title}</div><div className="card-price">{c.price}</div></div><div className="card-tag">{c.tag}</div><div className="card-arrow">→ 詳細・お申し込み</div></a>;
               })}
+              <div className="sample-box">
+                <p className="sample-title">¥500鑑定では、こんな鑑定文が届きます</p>
+                <p className="sample-note">九星気学かんたん鑑定のサンプル結果です。サンプル用の生年月日で実際に生成した鑑定文の実物で、個人情報は含まれていません（末尾のご案内文は省略しています）。ご購入いただくと、あなたの生年月日で同じ形式の鑑定文が届きます。</p>
+                <details className="sample-details">
+                  <summary>サンプル結果を読む（1990年1月15日生まれ・九星気学）</summary>
+                  <div className="sample-body">{SAMPLE_KYUSEI_TEXT}</div>
+                </details>
+                <div className="sample-links">
+                  <a className="sample-btn" href="https://mosh.jp/services/432861" target="_blank" rel="noopener noreferrer" onClick={() => window.gtag?.("event", "mosh_link_click", { course_id: "kyusei500", course_title: "九星気学かんたん鑑定", course_price: 500, is_primary: false })}>九星気学 ¥500鑑定を見る</a>
+                  <a className="sample-btn" href="https://mosh.jp/services/432862" target="_blank" rel="noopener noreferrer" onClick={() => window.gtag?.("event", "mosh_link_click", { course_id: "sanmei500", course_title: "算命学かんたん鑑定", course_price: 500, is_primary: false })}>算命学 ¥500鑑定を見る</a>
+                </div>
+              </div>
               <button className="reset-btn" onClick={reset}>← 別の診断をする</button>
             </div>
           )}
